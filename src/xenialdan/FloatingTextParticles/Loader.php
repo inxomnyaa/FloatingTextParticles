@@ -2,7 +2,9 @@
 
 namespace xenialdan\FloatingTextParticles;
 
+use pocketmine\level\Position;
 use pocketmine\plugin\PluginBase;
+use pocketmine\Server;
 use xenialdan\FloatingTextParticles\other\FakeFloatingTextParticle;
 
 
@@ -32,8 +34,12 @@ class Loader extends PluginBase{
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 		$this->getServer()->getCommandMap()->register(Commands::class, new Commands($this));
 		foreach (Loader::getInstance()->getConfig()->getAll() as $id => $data){
-			var_dump($data);
+			$ftp = new FakeFloatingTextParticle(new Position($data["x"], $data["y"], $data["z"], Server::getInstance()->getLevelByName($data["levelname"])), $data["text"], $data["title"]);
+			$ftp->setEntityId($id);
+			Loader::$particles[$ftp->getEntityId()] = $ftp;
+			Server::getInstance()->getLevelByName($data['levelname'])->addParticle($ftp, Server::getInstance()->getLevelByName($data['levelname'])->getPlayers());
 		}
+		var_dump(Loader::$particles);
 	}
 
 	public function onDisable(){

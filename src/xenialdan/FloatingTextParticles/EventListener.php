@@ -8,6 +8,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\level\Position;
+use pocketmine\network\mcpe\protocol\FullChunkDataPacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\Player;
 use pocketmine\plugin\Plugin;
@@ -22,7 +23,7 @@ class EventListener implements Listener{
 		$this->owner = $plugin;
 	}
 
-	public function onDataPacket(DataPacketReceiveEvent $event){
+	public function onDataPacketReceive(DataPacketReceiveEvent $event){
 		if ($event->getPacket() instanceof InventoryTransactionPacket){
 			$event->setCancelled($this->handleInventoryTransaction($event->getPacket(), $event->getPlayer()));
 		}
@@ -45,6 +46,7 @@ class EventListener implements Listener{
 						if (array_key_exists($packet->trData->entityRuntimeId, Loader::$particles)){
 							if (array_key_exists($player->getName(), Loader::$removing)){
 								Loader::$particles[$packet->trData->entityRuntimeId]->remove();
+								unset(Loader::$particles[$packet->trData->entityRuntimeId]);
 								unset(Loader::$removing[$player->getName()]);
 							} elseif (array_key_exists($player->getName(), Loader::$editing)){
 								Loader::$particles[$packet->trData->entityRuntimeId]->setTitle(Loader::$editing[$player->getName()]);
@@ -62,28 +64,18 @@ class EventListener implements Listener{
 	public function chunkLoad(ChunkLoadEvent $event){//To survive a restart/chunk reload
 		foreach (Loader::$particles as $particleid => $particle){
 			if (($event->getChunk()->getX() * 16) <= $particle->asVector3()->getX() && ($particle->asVector3()->getX() < $event->getChunk()->getX() * 16 + 16))
-				if (($event->getChunk()->getZ() * 16) <= $particle->asVector3()->getZ() && ($particle->asVector3()->getZ() < $event->getChunk()->getZ() * 16 + 16))
+				if (($event->getChunk()->getZ() * 16) <= $particle->asVector3()->getZ() && ($particle->asVector3()->getZ() < $event->getChunk()->getZ() * 16 + 16)){
 					$event->getLevel()->addParticle($particle, $event->getLevel()->getPlayers());
+					var_dump($particle);
+				}
 		}
-	}
-
-	public function onLevelLoad(LevelLoadEvent $event){
-		foreach (Loader::getInstance()->getConfig()->getAll() as $id => $data){
-			var_dump($data);
-			if ($event->getLevel()->getName() === $data["levelname"]){
-				$ftp = new FakeFloatingTextParticle(new Position($data["x"], $data["y"], $data["z"], Server::getInstance()->getLevelByName($data["levelname"])), $data["text"], $data["title"]);
-				$ftp->setEntityId($id);
-				Loader::$particles[$id] = $ftp;
-			}
-		}
-		var_dump(Loader::$particles);
 	}
 
 	public function playerJoin(PlayerJoinEvent $event){
-		var_dump(Loader::$particles);
 		foreach (Loader::$particles as $particleid => $particle){
 			if ($event->getPlayer()->getLevel()->getName() === $particle->getLevel()->getName()){
 				$event->getPlayer()->getLevel()->addParticle($particle, [$event->getPlayer()]);
+				var_dump($particle);
 			}
 		}
 	}

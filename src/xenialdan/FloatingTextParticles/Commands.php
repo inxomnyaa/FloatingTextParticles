@@ -10,6 +10,7 @@ use pocketmine\utils\TextFormat;
 use xenialdan\FloatingTextParticles\subcommand\CancelSubCommand;
 use xenialdan\FloatingTextParticles\subcommand\CreateSubCommand;
 use xenialdan\FloatingTextParticles\subcommand\EditSubCommand;
+use xenialdan\FloatingTextParticles\subcommand\ReloadSubCommand;
 use xenialdan\FloatingTextParticles\subcommand\RemoveSubCommand;
 use xenialdan\FloatingTextParticles\subcommand\SubCommand;
 
@@ -21,7 +22,7 @@ class Commands extends PluginCommand{
 
 	public function __construct(Plugin $plugin){
 		parent::__construct("floatingtextparticles", $plugin);
-		$this->setAliases(["ftp"]);
+		$this->setAliases(["fltp"]);
 		$this->setPermission("floatingtextparticles.command");
 		$this->setDescription("The main commands for floatingtextparticles");
 
@@ -29,6 +30,7 @@ class Commands extends PluginCommand{
 		$this->loadSubCommand(new CancelSubCommand($plugin));
 		$this->loadSubCommand(new RemoveSubCommand($plugin));
 		$this->loadSubCommand(new EditSubCommand($plugin));
+		$this->loadSubCommand(new ReloadSubCommand($plugin));
 	}
 
 	private function loadSubCommand(SubCommand $command){
