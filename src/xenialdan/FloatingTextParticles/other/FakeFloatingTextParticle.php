@@ -11,7 +11,7 @@ use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\RemoveEntityPacket;
 use pocketmine\network\mcpe\protocol\SetEntityDataPacket;
 use pocketmine\Server;
-use xenialdan\MysteryBoxes\Loader;
+use xenialdan\FloatingTextParticles\Loader;
 
 class FakeFloatingTextParticle extends FloatingTextParticle{
 	private $level;
