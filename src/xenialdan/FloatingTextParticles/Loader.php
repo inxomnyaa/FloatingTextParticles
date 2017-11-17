@@ -39,7 +39,6 @@ class Loader extends PluginBase{
 			Loader::$particles[$ftp->getEntityId()] = $ftp;
 			Server::getInstance()->getLevelByName($data['levelname'])->addParticle($ftp, Server::getInstance()->getLevelByName($data['levelname'])->getPlayers());
 		}
-		var_dump(Loader::$particles);
 	}
 
 	public function onDisable(){

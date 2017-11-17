@@ -42,7 +42,6 @@ class ReloadSubCommand extends SubCommand{
 		 */
 		foreach (Loader::$particles as $particleid => $particle){
 			$particle->resend();
-			var_dump($particle);
 		}
 		return true;
 	}

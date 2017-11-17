@@ -66,7 +66,6 @@ class EventListener implements Listener{
 			if (($event->getChunk()->getX() * 16) <= $particle->asVector3()->getX() && ($particle->asVector3()->getX() < $event->getChunk()->getX() * 16 + 16))
 				if (($event->getChunk()->getZ() * 16) <= $particle->asVector3()->getZ() && ($particle->asVector3()->getZ() < $event->getChunk()->getZ() * 16 + 16)){
 					$event->getLevel()->addParticle($particle, $event->getLevel()->getPlayers());
-					var_dump($particle);
 				}
 		}
 	}
@@ -75,7 +74,6 @@ class EventListener implements Listener{
 		foreach (Loader::$particles as $particleid => $particle){
 			if ($event->getPlayer()->getLevel()->getName() === $particle->getLevel()->getName()){
 				$event->getPlayer()->getLevel()->addParticle($particle, [$event->getPlayer()]);
-				var_dump($particle);
 			}
 		}
 	}
