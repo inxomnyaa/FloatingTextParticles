@@ -41,7 +41,7 @@ class ReloadSubCommand extends SubCommand{
 		 * @var FakeFloatingTextParticle $particle
 		 */
 		foreach (Loader::$particles as $particleid => $particle){
-			$particle->resend();
+			$particle->getLevel()->addParticle($particle, $particle->getLevel()->getPlayers());
 		}
 		return true;
 	}

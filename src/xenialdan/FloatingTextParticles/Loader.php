@@ -33,9 +33,8 @@ class Loader extends PluginBase{
 	public function onEnable(){
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 		$this->getServer()->getCommandMap()->register(Commands::class, new Commands($this));
-		foreach (Loader::getInstance()->getConfig()->getAll() as $id => $data){
+		foreach (Loader::getInstance()->getConfig()->getAll() as $data){
 			$ftp = new FakeFloatingTextParticle(new Position($data["x"], $data["y"], $data["z"], Server::getInstance()->getLevelByName($data["levelname"])), $data["text"], $data["title"]);
-			$ftp->setEntityId($id);
 			Loader::$particles[$ftp->getEntityId()] = $ftp;
 			Server::getInstance()->getLevelByName($data['levelname'])->addParticle($ftp, Server::getInstance()->getLevelByName($data['levelname'])->getPlayers());
 		}
@@ -43,9 +42,11 @@ class Loader extends PluginBase{
 
 	public function onDisable(){
 		self::resetConfig();
-		foreach (self::$particles as $particleid => $particle){
-			$this->getConfig()->set($particleid, ["x" => $particle->getX(), "y" => $particle->getY(), "z" => $particle->getZ(), "levelname" => $particle->getLevel()->getName(), "title" => $particle->getTitle(), "text" => $particle->getText()]);
+		$array = [];
+		foreach (self::$particles as $particle){
+			$array[] = ["x" => $particle->getX(), "y" => $particle->getY(), "z" => $particle->getZ(), "levelname" => $particle->getLevel()->getName(), "title" => $particle->getTitle(), "text" => $particle->getText()];
 		}
+		$this->getConfig()->setAll($array);
 		$this->getConfig()->save();
 	}
 

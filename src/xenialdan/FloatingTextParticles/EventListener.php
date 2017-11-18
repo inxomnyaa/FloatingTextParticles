@@ -3,17 +3,12 @@
 namespace xenialdan\FloatingTextParticles;
 
 use pocketmine\event\level\ChunkLoadEvent;
-use pocketmine\event\level\LevelLoadEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\level\Position;
-use pocketmine\network\mcpe\protocol\FullChunkDataPacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\Player;
 use pocketmine\plugin\Plugin;
-use pocketmine\Server;
-use xenialdan\FloatingTextParticles\other\FakeFloatingTextParticle;
 
 class EventListener implements Listener{
 	/** @var Loader */
@@ -24,8 +19,9 @@ class EventListener implements Listener{
 	}
 
 	public function onDataPacketReceive(DataPacketReceiveEvent $event){
-		if ($event->getPacket() instanceof InventoryTransactionPacket){
-			$event->setCancelled($this->handleInventoryTransaction($event->getPacket(), $event->getPlayer()));
+		/** @var InventoryTransactionPacket $packet */
+		if (($packet = $event->getPacket()) instanceof InventoryTransactionPacket){
+			$event->setCancelled($this->handleInventoryTransaction($packet, $event->getPlayer()));
 		}
 	}
 
@@ -62,16 +58,16 @@ class EventListener implements Listener{
 	}
 
 	public function chunkLoad(ChunkLoadEvent $event){//To survive a restart/chunk reload
-		foreach (Loader::$particles as $particleid => $particle){
+		foreach (Loader::$particles as $particle){
 			if (($event->getChunk()->getX() * 16) <= $particle->asVector3()->getX() && ($particle->asVector3()->getX() < $event->getChunk()->getX() * 16 + 16))
 				if (($event->getChunk()->getZ() * 16) <= $particle->asVector3()->getZ() && ($particle->asVector3()->getZ() < $event->getChunk()->getZ() * 16 + 16)){
-					$event->getLevel()->addParticle($particle, $event->getLevel()->getPlayers());
+					$event->getLevel()->addParticle($particle);
 				}
 		}
 	}
 
 	public function playerJoin(PlayerJoinEvent $event){
-		foreach (Loader::$particles as $particleid => $particle){
+		foreach (Loader::$particles as $particle){
 			if ($event->getPlayer()->getLevel()->getName() === $particle->getLevel()->getName()){
 				$event->getPlayer()->getLevel()->addParticle($particle, [$event->getPlayer()]);
 			}
