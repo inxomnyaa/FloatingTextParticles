@@ -1,2 +1,5 @@
 .idea/*
 config.yml
+resources
+!resources/config.yml
+!resources/**.ini
