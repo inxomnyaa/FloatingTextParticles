@@ -13,8 +13,8 @@ use pocketmine\level\particle\FloatingTextParticle;
 use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\AddPlayerPacket;
 use pocketmine\network\mcpe\protocol\PlayerSkinPacket;
-use pocketmine\network\mcpe\protocol\RemoveEntityPacket;
-use pocketmine\network\mcpe\protocol\SetEntityDataPacket;
+use pocketmine\network\mcpe\protocol\RemoveActorPacket;
+use pocketmine\network\mcpe\protocol\SetActorDataPacket;
 use pocketmine\Server;
 use pocketmine\utils\UUID;
 use xenialdan\FloatingTextParticles\Loader;
@@ -32,7 +32,7 @@ class FakeFloatingTextParticle extends FloatingTextParticle{
 		$this->title = $title;
 		$this->level = $pos->level;
 		parent::__construct($pos->asVector3(), $text, $title);
-		$pk = new SetEntityDataPacket();
+        $pk = new SetActorDataPacket();
 		$pk->entityRuntimeId = $this->getEntityId();
 		$pk->metadata = [Entity::DATA_BOUNDING_BOX_HEIGHT => [Entity::DATA_TYPE_FLOAT, 0.3], Entity::DATA_BOUNDING_BOX_WIDTH => [Entity::DATA_TYPE_FLOAT, 0.3]];
 		Server::getInstance()->broadcastPacket(Server::getInstance()->getOnlinePlayers(), $pk);
@@ -40,7 +40,7 @@ class FakeFloatingTextParticle extends FloatingTextParticle{
 
 	public function remove(){
 		$this->setInvisible();
-		$pk = new RemoveEntityPacket();
+        $pk = new RemoveActorPacket();
 		$pk->entityUniqueId = $this->getEntityId();
 		Server::getInstance()->broadcastPacket(Server::getInstance()->getOnlinePlayers(), $pk);
 		unset(Loader::$particles[$this->getEntityId()]);
@@ -65,7 +65,7 @@ class FakeFloatingTextParticle extends FloatingTextParticle{
 
 	public function setText(string $text): void{
 		parent::setText($text);
-		$pk = new SetEntityDataPacket();
+        $pk = new SetActorDataPacket();
 		$pk->entityRuntimeId = $this->getEntityId();
 		$pk->metadata = [Entity::DATA_NAMETAG => [Entity::DATA_TYPE_STRING, $this->title . ($this->text !== "" ? "\n" . $this->text : "")]];
 		Server::getInstance()->broadcastPacket(Server::getInstance()->getOnlinePlayers(), $pk);
@@ -73,7 +73,7 @@ class FakeFloatingTextParticle extends FloatingTextParticle{
 
 	public function setTitle(string $text): void{
 		parent::setTitle($text);
-		$pk = new SetEntityDataPacket();
+        $pk = new SetActorDataPacket();
 		$pk->entityRuntimeId = $this->getEntityId();
 		$pk->metadata = [Entity::DATA_NAMETAG => [Entity::DATA_TYPE_STRING, $this->title . ($this->text !== "" ? "\n" . $this->text : "")]];
 		Server::getInstance()->broadcastPacket(Server::getInstance()->getOnlinePlayers(), $pk);
@@ -95,7 +95,7 @@ class FakeFloatingTextParticle extends FloatingTextParticle{
 		if($id === null){
 			$this->setEntityId($id);
 		}else{
-			$pk0 = new RemoveEntityPacket();
+            $pk0 = new RemoveActorPacket();
 			$pk0->entityUniqueId = $id;
 
 			$p[] = $pk0;
