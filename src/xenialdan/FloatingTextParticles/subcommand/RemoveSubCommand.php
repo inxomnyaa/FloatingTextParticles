@@ -6,6 +6,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 use xenialdan\FloatingTextParticles\Loader;
+use xenialdan\FloatingTextParticles\other\EditHighlightAllTask;
 
 class RemoveSubCommand extends SubCommand{
 
@@ -37,6 +38,7 @@ class RemoveSubCommand extends SubCommand{
 	public function execute(CommandSender $sender, array $args){
 		Loader::$removing[$sender->getName()] = true;
 		$sender->sendMessage(TextFormat::GREEN . 'Now tap a floating text particle to remove it');
-		return true;
+        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new EditHighlightAllTask($sender->getName()), 20);
+        return true;
 	}
 }

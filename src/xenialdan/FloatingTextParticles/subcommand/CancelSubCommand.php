@@ -37,7 +37,7 @@ class CancelSubCommand extends SubCommand{
 	public function execute(CommandSender $sender, array $args){
 		unset(Loader::$editing[$sender->getName()]);
 		unset(Loader::$removing[$sender->getName()]);
-		$sender->sendMessage(TextFormat::RED . 'Editing / removing signs was cancelled');
+        $sender->sendMessage(TextFormat::RED . 'Editing / removing particles was cancelled');
 		return true;
 	}
 }

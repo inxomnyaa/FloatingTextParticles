@@ -6,6 +6,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 use xenialdan\FloatingTextParticles\Loader;
+use xenialdan\FloatingTextParticles\other\EditHighlightAllTask;
 
 class EditSubCommand extends SubCommand{
 
@@ -35,10 +36,9 @@ class EditSubCommand extends SubCommand{
 	 * @return bool
 	 */
 	public function execute(CommandSender $sender, array $args){
-		if (empty($args)) return false;
-		if (empty(($text = trim(implode(" ", $args))))) return false;
-		Loader::$editing[$sender->getName()] = $text;
+        Loader::$editing[$sender->getName()] = true;
 		$sender->sendMessage(TextFormat::GREEN . 'Now tap a floating text particle to edit it');
-		return true;
+        Loader::getInstance()->getScheduler()->scheduleRepeatingTask(new EditHighlightAllTask($sender->getName()), 20);
+        return true;
 	}
 }

@@ -1,10 +1,24 @@
 ---
 name: FloatingTextParticles
 main: xenialdan\FloatingTextParticles\Loader
-version: 1.1.2
-api: [3.9, 4.0.0]
+version: 1.2.0
+api: [3.9]
 load: POSTWORLD
 authors:
 - XenialDan
 prefix: FloatingTextParticles by XenialDan
+permissions:
+  floatingtextparticles.command:
+    default: op
+    children:
+      floatingtextparticles.command.cancel:
+        default: op
+      floatingtextparticles.command.create:
+        default: op
+      floatingtextparticles.command.edit:
+        default: op
+      floatingtextparticles.command.reload:
+        default: op
+      floatingtextparticles.command.remove:
+        default: op
 ...
